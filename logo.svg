@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#4f7bff"/>
+      <stop offset="1" stop-color="#2447b8"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="url(#bg)"/>
+  <!-- hovoriaca bublina -->
+  <path d="M122 150a46 46 0 0 1 46-46h176a46 46 0 0 1 46 46v128a46 46 0 0 1-46 46H244l-70 62v-62h-6a46 46 0 0 1-46-46z" fill="#ffffff"/>
+  <!-- tri bodky (rozhovor) -->
+  <circle cx="198" cy="214" r="21" fill="#2f5de8"/>
+  <circle cx="256" cy="214" r="21" fill="#2f5de8"/>
+  <circle cx="314" cy="214" r="21" fill="#2f5de8"/>
+  <!-- malá žltá iskra (učenie) -->
+  <path d="M390 330l12 30 30 12-30 12-12 30-12-30-30-12 30-12z" fill="#ffd54a"/>
+</svg>
