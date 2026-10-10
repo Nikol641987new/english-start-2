@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="sk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>English Start – angličtina pre začiatočníkov</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="top">
+  <div>
+    <h1>🇬🇧 English Start</h1>
+    <p>Angličtina pre začiatočníkov</p>
+  </div>
+  <button id="btnSettings" class="icon" title="Nastavenia AI">⚙️</button>
+</header>
+
+<nav id="tabs">
+  <button data-tab="verbs" class="active">📚 Slovesá</button>
+  <button data-tab="read">📖 Čítanie</button>
+  <button data-tab="practice">✏️ Cvičenia</button>
+  <button data-tab="chat">💬 Rozhovor s AI</button>
+  <button data-tab="progress">📈 Pokrok</button>
+</nav>
+
+<main>
+  <section id="tab-verbs" class="tab active">
+    <h2>Nepravidelné slovesá</h2>
+    <p class="hint">Klikni na sloveso a uvidíš všetky tvary (prítomný, minulý, budúci čas…). 🔊 = výslovnosť.</p>
+    <input id="verbSearch" type="search" placeholder="Hľadaj sloveso (anglicky alebo slovensky)…">
+    <div class="vhead"><span>Základný tvar</span><span>Minulý čas</span><span>3. tvar</span><span>Slovensky</span><span></span></div>
+    <div id="verbList"></div>
+  </section>
+
+  <section id="tab-read" class="tab">
+    <div id="readArea"></div>
+  </section>
+
+  <section id="tab-practice" class="tab">
+    <h2>Cvičenia</h2>
+    <div id="exMenu" class="cards"></div>
+    <div id="exArea"></div>
+  </section>
+
+  <section id="tab-chat" class="tab">
+    <h2>Rozhovor s AI učiteľom</h2>
+    <p class="hint">AI sa ťa bude pýtať po anglicky a opraví tvoje chyby (po slovensky). Potrebuje API kľúč – nastav ho cez ⚙️.</p>
+    <div class="controls">
+      <label>Téma
+        <select id="chatMode">
+          <option value="free">Voľný rozhovor</option>
+          <option value="article">Otázky k článku</option>
+        </select>
+      </label>
+      <label id="lblArticle" class="hidden">Článok <select id="chatArticle"></select></label>
+      <label>Čas
+        <select id="chatTense">
+          <option value="mixed">Všetko dohromady</option>
+          <option value="past">Minulý čas</option>
+          <option value="present">Prítomný čas</option>
+          <option value="future">Budúci čas</option>
+          <option value="perfect">Present perfect (have + 3. tvar)</option>
+        </select>
+      </label>
+      <button id="chatStart" class="primary">▶ Začať rozhovor</button>
+    </div>
+    <div id="chatLog" class="chatlog"></div>
+    <div class="chips">
+      <button data-say="Please repeat.">Please repeat</button>
+      <button data-say="I don't understand. Please explain in Slovak.">Nerozumiem</button>
+      <button data-say="I don't know. Please give me a hint.">Nápoveda</button>
+      <button data-say="Next question, please.">Ďalšia otázka</button>
+    </div>
+    <form id="chatForm">
+      <input id="chatInput" type="text" placeholder="Napíš odpoveď po anglicky…" autocomplete="off">
+      <button type="button" id="chatMic" class="icon" title="Hovor (mikrofón)">🎤</button>
+      <button class="primary">Odoslať</button>
+    </form>
+  </section>
+
+  <section id="tab-progress" class="tab">
+    <div id="progressArea"></div>
+  </section>
+</main>
+
+<dialog id="dlg">
+  <form method="dialog" id="dlgForm">
+    <h3>Nastavenia AI rozhovoru</h3>
+    <p class="hint">API kľúč vytvoríš na <a href="https://console.anthropic.com/" target="_blank" rel="noopener">console.anthropic.com</a>. Uloží sa len v tomto prehliadači (localStorage) a posiela sa iba na Anthropic. Nastav si mesačný limit výdavkov a kľúč nikomu nezdieľaj.</p>
+    <label>API kľúč <input id="apiKey" type="password" placeholder="sk-ant-…" autocomplete="off"></label>
+    <label>Model
+      <select id="model">
+        <option value="claude-haiku-5-5">Haiku 5.5 – rýchly a lacný (odporúčané)</option>
+        <option value="claude-sonnet-5-5">Sonnet 5.5 – múdrejší</option>
+      </select>
+    </label>
+    <label>Hlas na čítanie
+      <select id="voice"></select>
+    </label>
+    <button type="button" id="testVoice">🔊 Vyskúšať hlas</button>
+    <p class="hint">Najlepšie znejú hlasy s označením „Enhanced", „Premium" alebo „Natural". Ak ich nevidíš, dá sa ich stiahnuť v nastaveniach telefónu (viď README).</p>
+    <div class="row">
+      <button value="cancel">Zavrieť</button>
+      <button id="saveSettings" class="primary" value="save">Uložiť</button>
+    </div>
+  </form>
+</dialog>
+
+<script src="dictionary.js"></script>
+<script src="verbs.js"></script>
+<script src="articles.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
