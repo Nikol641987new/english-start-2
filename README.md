@@ -7,7 +7,7 @@ Jednoduchá webová aplikácia na učenie angličtiny pre začiatočníkov (slov
 - **📚 Slovesá** – 45 nepravidelných slovies so slovenským prekladom základného, minulého aj tretieho tvaru; po rozkliknutí aj preklady viet vo všetkých piatich časoch, výslovnosť 🔊 a príklad.
 - **📖 Slovník** – viac ako 770 jedinečných bežných slov a fráz rozdelených podľa tém; vyhľadávanie, filtre a výslovnosť.
 - **📖 Čítanie** – krátke články; klikni na slovo a zobrazí sa preklad (aj tvary nepravidelných slovies, napr. *went* → minulý čas od *go*). Slovíčka si môžeš uložiť. Pod článkom sú otázky a tlačidlo na rozhovor o článku s AI.
-- **✏️ Cvičenia** – precvič si slovesá aj slovíčka: doplň tvar, vyber preklad, píš, počúvaj alebo hovor nahlas.
+- **✏️ Cvičenia** – precvič si slovesá aj slovíčka: doplň tvar, vyber preklad, píš, počúvaj alebo hovor nahlas; výslovnosť slovíčka si môžeš prehrať v otázke aj po odpovedi.
 - **💬 Rozhovor s AI** – AI učiteľ sa pýta po anglicky, ty odpovedáš písaním alebo hlasom, opravuje chyby po slovensky.
 - **📈 Pokrok** – štatistiky, slovesá, ktoré ti nejdú, a uložené slovíčka (ukladá sa v prehliadači).
 

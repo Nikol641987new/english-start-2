@@ -415,6 +415,7 @@
     return {
       word, type: 'choice',
       prompt: englishPrompt ? `Čo znamená „${word.en}“?` : `Ako sa povie po anglicky „${word.sk}“?`,
+      wordSpeakText: englishPrompt ? word.en : null,
       options: shuffle([correct, ...shuffle(pool).slice(0, 3)]),
       answers: [correct], reveal: correct
     };
@@ -426,6 +427,7 @@
     return {
       word, type: 'text',
       prompt: englishPrompt ? `Napíš slovenský preklad: „${word.en}“` : `Napíš po anglicky: „${word.sk}“`,
+      wordSpeakText: englishPrompt ? word.en : null,
       answers: [englishPrompt ? word.sk : word.en],
       reveal: englishPrompt ? word.sk : word.en
     };
@@ -493,6 +495,9 @@
     const scoreSpan = el('span', {}, `Skóre: ${ex.score}`);
     a.append(el('div', { class: 'exhead' }, `Otázka ${ex.n} / ${ex.total}`, scoreSpan));
     a.append(el('h3', { class: 'prompt' }, q.prompt));
+    if (q.wordSpeakText) {
+      a.append(el('button', { class: 'sec', type: 'button', title: `Vypočuť: ${q.wordSpeakText}`, onclick: () => speak(q.wordSpeakText) }, '🔊 Vypočuť slovíčko'));
+    }
     if (q.big) a.append(el('p', { class: 'prompt' }, q.big));
     if (q.sub) a.append(el('p', { class: 'hint' }, q.sub));
 
@@ -516,6 +521,9 @@
       fb.textContent = ok ? '✅ Správne!' : `❌ Správna odpoveď: ${q.reveal}`;
       if (shown) fb.append(el('div', { class: 'note' }, shown));
       if (q.after) fb.append(el('div', { class: 'note' }, q.after));
+      if (q.word) {
+        fb.append(el('button', { class: 'sec', type: 'button', title: `Vypočuť: ${q.word.en}`, onclick: () => speak(q.word.en) }, '🔊 Vypočuť slovíčko'));
+      }
       nextBtn.classList.remove('hidden');
       nextBtn.focus();
     };
