@@ -48,11 +48,13 @@ input[type=search] { width: 100%; margin-bottom: 10px; }
 .vrow { cursor: pointer; }
 .vrow:hover { background: #f1f4ff; }
 .vrow .sk { color: var(--muted); }
+.vform small { display: block; color: var(--muted); font-size: .82rem; line-height: 1.3; }
 .vdet { padding: 12px; border-top: 1px dashed var(--line); background: #fafbff; }
 .tenses { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 10px; }
 .tcard { background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 10px; }
 .tcard h4 { margin: 0 0 6px; font-size: .88rem; color: var(--main-d); }
 .tcard div { font-size: .95rem; }
+.tcard .translation { color: var(--muted); font-size: .86rem; margin: 0 0 6px; }
 .example { margin-top: 10px; }
 
 /* Karty */

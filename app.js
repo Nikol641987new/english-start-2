@@ -66,11 +66,39 @@
 
   /* ---------- Dáta ---------- */
   const VERBS = window.VERB_DATA.map(([inf, past, pp, sk, ing, third, ex, exSk]) => ({ inf, past, pp, sk, ing, third, ex, exSk }));
+  const VERB_TRANSLATIONS = window.VERB_TRANSLATIONS;
+  const VERB_FORM_TRANSLATIONS = window.VERB_FORM_TRANSLATIONS;
   const DICT = window.DICT;
   const WORDS = window.WORD_DATA;
   const ARTICLES = window.ARTICLES;
   const PRON = ['I', 'you', 'he/she/it', 'we', 'you', 'they'];
   const BE_PRES = ['am', 'are', 'is', 'are', 'are', 'are'];
+  const FUTURE_OVERRIDES = {
+    be: ['Ja budem', 'Ty budeš', 'On/Ona/To bude', 'My budeme', 'Vy budete', 'Oni/Ony budú'],
+    go: ['Ja pôjdem', 'Ty pôjdeš', 'On/Ona/To pôjde', 'My pôjdeme', 'Vy pôjdete', 'Oni/Ony pôjdu'],
+    come: ['Ja prídem', 'Ty prídeš', 'On/Ona/To príde', 'My prídeme', 'Vy prídete', 'Oni/Ony prídu'],
+    see: ['Ja uvidím', 'Ty uvidíš', 'On/Ona/To uvidí', 'My uvidíme', 'Vy uvidíte', 'Oni/Ony uvidia'],
+    take: ['Ja vezmem', 'Ty vezmeš', 'On/Ona/To vezme', 'My vezmeme', 'Vy vezmete', 'Oni/Ony vezmú'],
+    make: ['Ja urobím', 'Ty urobíš', 'On/Ona/To urobí', 'My urobíme', 'Vy urobíte', 'Oni/Ony urobia'],
+    get: ['Ja dostanem', 'Ty dostaneš', 'On/Ona/To dostane', 'My dostaneme', 'Vy dostanete', 'Oni/Ony dostanú'],
+    give: ['Ja dám', 'Ty dáš', 'On/Ona/To dá', 'My dáme', 'Vy dáte', 'Oni/Ony dajú'],
+    say: ['Ja poviem', 'Ty povieš', 'On/Ona/To povie', 'My povieme', 'Vy poviete', 'Oni/Ony povedia'],
+    tell: ['Ja poviem', 'Ty povieš', 'On/Ona/To povie', 'My povieme', 'Vy poviete', 'Oni/Ony povedia'],
+    buy: ['Ja kúpim', 'Ty kúpiš', 'On/Ona/To kúpi', 'My kúpime', 'Vy kúpite', 'Oni/Ony kúpia'],
+    bring: ['Ja prinesiem', 'Ty prinesieš', 'On/Ona/To prinesie', 'My prinesieme', 'Vy prinesiete', 'Oni/Ony prinesú'],
+    find: ['Ja nájdem', 'Ty nájdeš', 'On/Ona/To nájde', 'My nájdeme', 'Vy nájdete', 'Oni/Ony nájdu'],
+    leave: ['Ja odídem', 'Ty odídeš', 'On/Ona/To odíde', 'My odídeme', 'Vy odídete', 'Oni/Ony odídu'],
+    meet: ['Ja stretnem', 'Ty stretneš', 'On/Ona/To stretne', 'My stretneme', 'Vy stretnete', 'Oni/Ony stretnú'],
+    begin: ['Ja začnem', 'Ty začneš', 'On/Ona/To začne', 'My začneme', 'Vy začnete', 'Oni/Ony začnú'],
+    forget: ['Ja zabudnem', 'Ty zabudneš', 'On/Ona/To zabudne', 'My zabudneme', 'Vy zabudnete', 'Oni/Ony zabudnú'],
+    pay: ['Ja zaplatím', 'Ty zaplatíš', 'On/Ona/To zaplatí', 'My zaplatíme', 'Vy zaplatíte', 'Oni/Ony zaplatia'],
+    put: ['Ja položím', 'Ty položíš', 'On/Ona/To položí', 'My položíme', 'Vy položíte', 'Oni/Ony položia'],
+    send: ['Ja pošlem', 'Ty pošleš', 'On/Ona/To pošle', 'My pošleme', 'Vy pošlete', 'Oni/Ony pošlú'],
+    win: ['Ja vyhrám', 'Ty vyhráš', 'On/Ona/To vyhrá', 'My vyhráme', 'Vy vyhráte', 'Oni/Ony vyhrajú'],
+    lose: ['Ja stratím/prehrám', 'Ty stratíš/prehráš', 'On/Ona/To stratí/prehrá', 'My stratíme/prehráme', 'Vy stratíte/prehráte', 'Oni/Ony stratia/prehrajú'],
+    feel: ['Ja sa budem cítiť', 'Ty sa budeš cítiť', 'On/Ona/To sa bude cítiť', 'My sa budeme cítiť', 'Vy sa budete cítiť', 'Oni/Ony sa budú cítiť'],
+    sell: ['Ja predám', 'Ty predáš', 'On/Ona/To predá', 'My predáme', 'Vy predáte', 'Oni/Ony predajú']
+  };
 
   const FORM_INDEX = {};
   VERBS.forEach(v => {
@@ -94,12 +122,17 @@
 
   function conj(v) {
     const be = v.inf === 'be';
+    const translations = VERB_TRANSLATIONS[v.inf];
+    const futureInf = VERB_FORM_TRANSLATIONS[v.inf][0].split('/')[0].replace(/\s*\([^)]*\)/g, '');
+    const futureTranslations = FUTURE_OVERRIDES[v.inf] ||
+      ['Ja', 'Ty', 'On/Ona/To', 'My', 'Vy', 'Oni/Ony'].map((subject, i) =>
+        `${subject} ${['budem', 'budeš', 'bude', 'budeme', 'budete', 'budú'][i]} ${futureInf}`);
     return [
-      ['Prítomný čas (present simple)', PRON.map((p, i) => `${p} ${be ? BE_PRES[i] : (i === 2 ? v.third : v.inf)}`)],
-      ['Minulý čas (past simple)', PRON.map((p, i) => `${p} ${be ? (i === 0 || i === 2 ? 'was' : 'were') : v.past}`)],
-      ['Budúci čas (future)', PRON.map(p => `${p} will ${v.inf}`)],
-      ['Prítomný dokonavý (present perfect)', PRON.map((p, i) => `${p} ${i === 2 ? 'has' : 'have'} ${v.pp}`)],
-      ['Priebehový (present continuous)', PRON.map((p, i) => `${p} ${BE_PRES[i]} ${v.ing}`)]
+      ['Prítomný čas (present simple)', PRON.map((p, i) => `${p} ${be ? BE_PRES[i] : (i === 2 ? v.third : v.inf)}`), translations.present],
+      ['Minulý čas (past simple)', PRON.map((p, i) => `${p} ${be ? (i === 0 || i === 2 ? 'was' : 'were') : v.past}`), translations.perfect],
+      ['Budúci čas (future)', PRON.map(p => `${p} will ${v.inf}`), futureTranslations],
+      ['Prítomný dokonavý (present perfect)', PRON.map((p, i) => `${p} ${i === 2 ? 'has' : 'have'} ${v.pp}`), translations.perfect],
+      ['Priebehový (present continuous)', PRON.map((p, i) => `${p} ${BE_PRES[i]} ${v.ing}`), translations.present]
     ];
   }
 
@@ -123,10 +156,12 @@
   /* ================= SLOVESÁ ================= */
   function buildDetail(v, box) {
     const grid = el('div', { class: 'tenses' });
-    conj(v).forEach(([title, lines]) => {
-      grid.append(el('div', { class: 'tcard' }, el('h4', {}, title), lines.map(l => el('div', {}, l))));
+    conj(v).forEach(([title, lines, translations]) => {
+      grid.append(el('div', { class: 'tcard' }, el('h4', {}, title), lines.map((line, i) =>
+        el('div', {}, line, translations ? el('div', { class: 'translation' }, translations[i]) : null))));
     });
     box.append(grid);
+    box.append(el('p', { class: 'note' }, 'Slovenské preklady sú uvedené pod každou vetou. Present Perfect sa v slovenčine zvyčajne prekladá minulým časom; pri minulých tvaroch sú uvedené mužské/ženské možnosti.'));
     box.append(el('div', { class: 'example' },
       el('b', {}, v.ex), ' ',
       el('button', { class: 'icon', onclick: () => speak(v.ex) }, '🔊'),
@@ -138,9 +173,15 @@
     const f = filter.trim().toLowerCase();
     const list = $('#verbList');
     list.innerHTML = '';
-    VERBS.filter(v => !f || [v.inf, v.past, v.pp, v.sk].some(x => x.toLowerCase().includes(f))).forEach(v => {
+    VERBS.filter(v => !f || [
+      v.inf, v.past, v.pp, v.sk, ...VERB_FORM_TRANSLATIONS[v.inf]
+    ].some(x => x.toLowerCase().includes(f))).forEach(v => {
+      const [infSk, pastSk, ppSk] = VERB_FORM_TRANSLATIONS[v.inf];
       const row = el('div', { class: 'vrow' },
-        el('b', {}, v.inf), el('span', {}, v.past), el('span', {}, v.pp), el('span', { class: 'sk' }, v.sk),
+        el('span', { class: 'vform' }, el('b', {}, v.inf), el('small', {}, infSk)),
+        el('span', { class: 'vform' }, v.past, el('small', {}, pastSk)),
+        el('span', { class: 'vform' }, v.pp, el('small', {}, ppSk)),
+        el('span', { class: 'sk' }, v.sk),
         el('button', { class: 'icon', title: 'Výslovnosť', onclick: e => { e.stopPropagation(); speak(`${v.inf}, ${v.past}, ${v.pp}`); } }, '🔊'));
       const det = el('div', { class: 'vdet hidden' });
       row.addEventListener('click', () => {

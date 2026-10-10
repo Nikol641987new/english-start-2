@@ -4,7 +4,7 @@ Jednoduchá webová aplikácia na učenie angličtiny pre začiatočníkov (slov
 
 ## Čo vie
 
-- **📚 Slovesá** – 45 nepravidelných slovies so všetkými základnými tvarmi (prítomný, minulý, budúci čas, present perfect, priebehový), výslovnosť 🔊 a príklad.
+- **📚 Slovesá** – 45 nepravidelných slovies so slovenským prekladom základného, minulého aj tretieho tvaru; po rozkliknutí aj preklady viet vo všetkých piatich časoch, výslovnosť 🔊 a príklad.
 - **📖 Slovník** – základné slovíčka rozdelené podľa tém; vyhľadávanie, filtre a výslovnosť.
 - **📖 Čítanie** – krátke články; klikni na slovo a zobrazí sa preklad (aj tvary nepravidelných slovies, napr. *went* → minulý čas od *go*). Slovíčka si môžeš uložiť. Pod článkom sú otázky a tlačidlo na rozhovor o článku s AI.
 - **✏️ Cvičenia** – precvič si slovesá aj slovíčka: doplň tvar, vyber preklad, píš, počúvaj alebo hovor nahlas.
