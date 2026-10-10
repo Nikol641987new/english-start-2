@@ -5,7 +5,7 @@ Jednoduchá webová aplikácia na učenie angličtiny pre začiatočníkov (slov
 ## Čo vie
 
 - **📚 Slovesá** – 45 nepravidelných slovies so slovenským prekladom základného, minulého aj tretieho tvaru; po rozkliknutí aj preklady viet vo všetkých piatich časoch, výslovnosť 🔊 a príklad.
-- **📖 Slovník** – viac ako 770 jedinečných bežných slov a fráz rozdelených podľa tém; vyhľadávanie, filtre a výslovnosť.
+- **📖 Slovník** – 2 000 jedinečných bežných slov a fráz rozdelených podľa tém; vyhľadávanie, filtre a výslovnosť.
 - **📖 Čítanie** – krátke články; klikni na slovo a zobrazí sa preklad (aj tvary nepravidelných slovies, napr. *went* → minulý čas od *go*). Slovíčka si môžeš uložiť. Pod článkom sú otázky a tlačidlo na rozhovor o článku s AI.
 - **✏️ Cvičenia** – precvič si slovesá aj slovíčka: doplň tvar, vyber preklad, píš, počúvaj alebo hovor nahlas; výslovnosť slovíčka si môžeš prehrať v otázke aj po odpovedi.
 - **💬 Rozhovor s AI** – AI učiteľ sa pýta po anglicky, ty odpovedáš písaním alebo hlasom, opravuje chyby po slovensky.
@@ -31,7 +31,7 @@ Mikrofón a rozpoznávanie reči fungujú najlepšie v Chrome alebo Edge.
 ## Ako pridať nový obsah
 
 - **Sloveso:** pridaj riadok do `verbs.js`.
-- **Slovíčko:** pridaj položku `[anglicky, slovensky, kategória]` do `WORD_DATA` v `dictionary.js`.
+- **Slovíčko:** pridaj položku `[anglicky, slovensky, kategória]` do `WORD_DATA` v `dictionary.js` alebo do príslušnej témy v `dictionary-extra.js`.
 - **Článok:** pridaj objekt do `articles.js` (každá veta má `en` a `sk`) a nové slová doplň do `dictionary.js`.
 - **Nový typ cvičenia:** pridaj funkciu do objektu `gen` v `app.js` a záznam do poľa `MODES`.
 
