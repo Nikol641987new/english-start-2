@@ -18,6 +18,7 @@
 
 <nav id="tabs">
   <button data-tab="verbs" class="active">📚 Slovesá</button>
+  <button data-tab="dictionary">📖 Slovník</button>
   <button data-tab="read">📖 Čítanie</button>
   <button data-tab="practice">✏️ Cvičenia</button>
   <button data-tab="chat">💬 Rozhovor s AI</button>
@@ -31,6 +32,18 @@
     <input id="verbSearch" type="search" placeholder="Hľadaj sloveso (anglicky alebo slovensky)…">
     <div class="vhead"><span>Základný tvar</span><span>Minulý čas</span><span>3. tvar</span><span>Slovensky</span><span></span></div>
     <div id="verbList"></div>
+  </section>
+
+  <section id="tab-dictionary" class="tab">
+    <h2>Základný slovník</h2>
+    <p class="hint">Najdôležitejšie slovíčka pre bežné situácie. Vypočuj si ich výslovnosť alebo si ich precvič v časti Cvičenia.</p>
+    <div class="dictionary-controls">
+      <input id="wordSearch" type="search" placeholder="Hľadaj anglicky alebo slovensky…">
+      <select id="wordCategory" aria-label="Kategória slovíčok">
+        <option value="">Všetky kategórie</option>
+      </select>
+    </div>
+    <div id="wordList"></div>
   </section>
 
   <section id="tab-read" class="tab">

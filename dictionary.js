@@ -22,3 +22,81 @@ window.DICT = {
   'big': 'veľký', 'short': 'krátky', 'happy': 'šťastný', 'tired': 'unavený', 'red': 'červený', 'good': 'dobrý',
   'called': 'nazývaný', 'want': 'chcieť', 'wants': 'chce'
 };
+
+window.WORD_DATA = [
+  ['hello', 'ahoj', 'Základné výrazy'], ['goodbye', 'dovidenia', 'Základné výrazy'],
+  ['please', 'prosím', 'Základné výrazy'], ['thank you', 'ďakujem', 'Základné výrazy'],
+  ['yes', 'áno', 'Základné výrazy'], ['no', 'nie', 'Základné výrazy'],
+  ['sorry', 'prepáčte', 'Základné výrazy'], ['excuse me', 'prepáčte (pri oslovení)', 'Základné výrazy'],
+  ['help', 'pomoc', 'Základné výrazy'], ['today', 'dnes', 'Základné výrazy'],
+  ['tomorrow', 'zajtra', 'Základné výrazy'], ['yesterday', 'včera', 'Základné výrazy'],
+  ['morning', 'ráno', 'Základné výrazy'], ['evening', 'večer', 'Základné výrazy'],
+  ['day', 'deň', 'Základné výrazy'], ['week', 'týždeň', 'Základné výrazy'],
+  ['time', 'čas', 'Základné výrazy'], ['now', 'teraz', 'Základné výrazy'],
+  ['who', 'kto', 'Základné výrazy'], ['what', 'čo', 'Základné výrazy'],
+  ['where', 'kde', 'Základné výrazy'], ['when', 'kedy', 'Základné výrazy'],
+  ['why', 'prečo', 'Základné výrazy'], ['how', 'ako', 'Základné výrazy'],
+
+  ['mother', 'mama', 'Rodina a ľudia'], ['father', 'otec', 'Rodina a ľudia'],
+  ['parents', 'rodičia', 'Rodina a ľudia'], ['child', 'dieťa', 'Rodina a ľudia'],
+  ['son', 'syn', 'Rodina a ľudia'], ['daughter', 'dcéra', 'Rodina a ľudia'],
+  ['husband', 'manžel', 'Rodina a ľudia'], ['wife', 'manželka', 'Rodina a ľudia'],
+  ['grandmother', 'stará mama', 'Rodina a ľudia'], ['grandfather', 'starý otec', 'Rodina a ľudia'],
+  ['man', 'muž', 'Rodina a ľudia'], ['woman', 'žena', 'Rodina a ľudia'],
+  ['boy', 'chlapec', 'Rodina a ľudia'], ['girl', 'dievča', 'Rodina a ľudia'],
+  ['people', 'ľudia', 'Rodina a ľudia'], ['person', 'osoba, človek', 'Rodina a ľudia'],
+  ['baby', 'bábätko', 'Rodina a ľudia'],
+
+  ['food', 'jedlo', 'Jedlo a nápoje'], ['apple', 'jablko', 'Jedlo a nápoje'],
+  ['banana', 'banán', 'Jedlo a nápoje'], ['egg', 'vajce', 'Jedlo a nápoje'],
+  ['cheese', 'syr', 'Jedlo a nápoje'], ['meat', 'mäso', 'Jedlo a nápoje'],
+  ['chicken', 'kuracie mäso, kura', 'Jedlo a nápoje'], ['rice', 'ryža', 'Jedlo a nápoje'],
+  ['potato', 'zemiak', 'Jedlo a nápoje'], ['vegetable', 'zelenina', 'Jedlo a nápoje'],
+  ['fruit', 'ovocie', 'Jedlo a nápoje'], ['juice', 'džús', 'Jedlo a nápoje'],
+  ['orange', 'pomaranč', 'Jedlo a nápoje'], ['soup', 'polievka', 'Jedlo a nápoje'],
+  ['sugar', 'cukor', 'Jedlo a nápoje'], ['salt', 'soľ', 'Jedlo a nápoje'],
+  ['hungry', 'hladný', 'Jedlo a nápoje'], ['thirsty', 'smädný', 'Jedlo a nápoje'],
+
+  ['home', 'domov', 'Domov a veci'], ['room', 'izba', 'Domov a veci'],
+  ['kitchen', 'kuchyňa', 'Domov a veci'], ['bedroom', 'spálňa', 'Domov a veci'],
+  ['bathroom', 'kúpeľňa', 'Domov a veci'], ['door', 'dvere', 'Domov a veci'],
+  ['window', 'okno', 'Domov a veci'], ['table', 'stôl', 'Domov a veci'],
+  ['chair', 'stolička', 'Domov a veci'], ['bed', 'posteľ', 'Domov a veci'],
+  ['phone', 'telefón', 'Domov a veci'], ['key', 'kľúč', 'Domov a veci'],
+  ['bag', 'taška', 'Domov a veci'], ['clothes', 'oblečenie', 'Domov a veci'],
+  ['shoes', 'topánky', 'Domov a veci'], ['money', 'peniaze', 'Domov a veci'],
+
+  ['go', 'ísť', 'Každodenné slovesá'], ['come', 'prísť', 'Každodenné slovesá'],
+  ['eat', 'jesť', 'Každodenné slovesá'], ['drink', 'piť', 'Každodenné slovesá'],
+  ['sleep', 'spať', 'Každodenné slovesá'], ['work', 'pracovať', 'Každodenné slovesá'],
+  ['live', 'žiť, bývať', 'Každodenné slovesá'], ['like', 'mať rád', 'Každodenné slovesá'],
+  ['love', 'milovať', 'Každodenné slovesá'], ['need', 'potrebovať', 'Každodenné slovesá'],
+  ['want', 'chcieť', 'Každodenné slovesá'], ['make', 'urobiť, vyrobiť', 'Každodenné slovesá'],
+  ['play', 'hrať sa, hrať', 'Každodenné slovesá'], ['read', 'čítať', 'Každodenné slovesá'],
+  ['open', 'otvoriť', 'Každodenné slovesá'], ['close', 'zatvoriť', 'Každodenné slovesá'],
+  ['buy', 'kúpiť', 'Každodenné slovesá'], ['walk', 'kráčať', 'Každodenné slovesá'],
+  ['speak', 'hovoriť', 'Každodenné slovesá'], ['understand', 'rozumieť', 'Každodenné slovesá'],
+
+  ['good', 'dobrý', 'Opisné slovíčka'], ['bad', 'zlý', 'Opisné slovíčka'],
+  ['big', 'veľký', 'Opisné slovíčka'], ['small', 'malý', 'Opisné slovíčka'],
+  ['new', 'nový', 'Opisné slovíčka'], ['old', 'starý', 'Opisné slovíčka'],
+  ['hot', 'horúci', 'Opisné slovíčka'], ['cold', 'studený', 'Opisné slovíčka'],
+  ['happy', 'šťastný', 'Opisné slovíčka'], ['sad', 'smutný', 'Opisné slovíčka'],
+  ['easy', 'ľahký', 'Opisné slovíčka'], ['difficult', 'ťažký, náročný', 'Opisné slovíčka'],
+  ['beautiful', 'krásny', 'Opisné slovíčka'], ['tired', 'unavený', 'Opisné slovíčka'],
+  ['good morning', 'dobré ráno', 'Základné výrazy'], ['good night', 'dobrú noc', 'Základné výrazy'],
+
+  ['school', 'škola', 'Miesta a doprava'], ['shop', 'obchod', 'Miesta a doprava'],
+  ['street', 'ulica', 'Miesta a doprava'], ['city', 'mesto', 'Miesta a doprava'],
+  ['country', 'krajina', 'Miesta a doprava'], ['park', 'park', 'Miesta a doprava'],
+  ['hospital', 'nemocnica', 'Miesta a doprava'], ['restaurant', 'reštaurácia', 'Miesta a doprava'],
+  ['car', 'auto', 'Miesta a doprava'], ['bus', 'autobus', 'Miesta a doprava'],
+  ['train', 'vlak', 'Miesta a doprava'], ['train station', 'železničná stanica', 'Miesta a doprava'],
+  ['airport', 'letisko', 'Miesta a doprava'], ['ticket', 'lístok', 'Miesta a doprava'],
+  ['left', 'vľavo', 'Miesta a doprava'], ['right', 'vpravo', 'Miesta a doprava'],
+  ['near', 'blízko', 'Miesta a doprava'], ['far', 'ďaleko', 'Miesta a doprava']
+].map(([en, sk, category]) => ({ en, sk, category }));
+
+window.WORD_DATA.forEach(({ en, sk }) => {
+  window.DICT[en.toLowerCase()] = sk;
+});

@@ -31,6 +31,16 @@ button.sec { background: #fff; border: 1px solid var(--line); padding: 8px 12px;
 input, select { font: inherit; padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px; background: #fff; max-width: 100%; }
 input[type=search] { width: 100%; margin-bottom: 10px; }
 
+/* Slovník */
+.dictionary-controls { display: grid; grid-template-columns: minmax(0, 1fr) minmax(180px, .55fr); gap: 10px; margin-bottom: 12px; }
+.dictionary-controls input[type=search] { margin-bottom: 0; }
+.dictionary-controls select { width: 100%; }
+.word-list { background: var(--card); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+.word-row { display: grid; grid-template-columns: 1fr 1fr 40px; gap: 8px; align-items: center; padding: 10px 12px; border-bottom: 1px solid var(--line); }
+.word-row:last-child { border-bottom: 0; }
+.word-row small { display: block; color: var(--muted); font-size: .78rem; }
+.word-translation { color: var(--muted); }
+
 /* Slovesá */
 .vhead, .vrow { display: grid; grid-template-columns: 1.1fr 1.1fr 1.1fr 1.6fr 40px; gap: 8px; align-items: center; padding: 10px 12px; }
 .vhead { color: var(--muted); font-size: .8rem; text-transform: uppercase; letter-spacing: .03em; }
@@ -111,6 +121,8 @@ dialog .row { display: flex; justify-content: flex-end; gap: 8px; margin-top: 14
 dialog button:not(.primary) { background: #fff; border: 1px solid var(--line); padding: 10px 14px; border-radius: 10px; }
 
 @media (max-width: 560px) {
+  .dictionary-controls { grid-template-columns: 1fr; }
+  .word-row { grid-template-columns: 1fr 1fr 36px; }
   .vhead, .vrow { grid-template-columns: 1fr 1fr 1fr 34px; }
   .vhead span:nth-child(4) { display: none; }
   .vrow .sk { grid-column: 1 / -1; grid-row: 2; font-size: .92rem; margin-top: -4px; }

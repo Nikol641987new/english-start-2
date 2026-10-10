@@ -67,6 +67,7 @@
   /* ---------- Dáta ---------- */
   const VERBS = window.VERB_DATA.map(([inf, past, pp, sk, ing, third, ex, exSk]) => ({ inf, past, pp, sk, ing, third, ex, exSk }));
   const DICT = window.DICT;
+  const WORDS = window.WORD_DATA;
   const ARTICLES = window.ARTICLES;
   const PRON = ['I', 'you', 'he/she/it', 'we', 'you', 'they'];
   const BE_PRES = ['am', 'are', 'is', 'are', 'are', 'are'];
@@ -151,6 +152,39 @@
     if (!list.children.length) list.append(el('p', { class: 'hint' }, 'Nič som nenašiel.'));
   }
   $('#verbSearch').addEventListener('input', e => renderVerbs(e.target.value));
+
+  /* ================= SLOVNÍK ================= */
+  function renderWordList() {
+    const list = $('#wordList');
+    const query = $('#wordSearch').value.trim().toLowerCase();
+    const category = $('#wordCategory').value;
+    list.innerHTML = '';
+    const matches = WORDS.filter(w =>
+      (!category || w.category === category) &&
+      (!query || w.en.toLowerCase().includes(query) || w.sk.toLowerCase().includes(query))
+    );
+    if (!matches.length) {
+      list.append(el('p', { class: 'hint' }, 'Nenašli sa žiadne slovíčka.'));
+      return;
+    }
+    const rows = el('div', { class: 'word-list' });
+    matches.forEach(w => {
+      rows.append(el('div', { class: 'word-row' },
+        el('span', {}, el('b', {}, w.en), el('small', {}, w.category)),
+        el('span', { class: 'word-translation' }, w.sk),
+        el('button', { class: 'icon', title: `Vypočuť: ${w.en}`, onclick: () => speak(w.en) }, '🔊')
+      ));
+    });
+    list.append(el('p', { class: 'note' }, `${matches.length} slovíčok`), rows);
+  }
+
+  function initDictionary() {
+    const categories = [...new Set(WORDS.map(w => w.category))];
+    categories.forEach(category => $('#wordCategory').append(el('option', { value: category }, category)));
+    $('#wordSearch').addEventListener('input', renderWordList);
+    $('#wordCategory').addEventListener('change', renderWordList);
+    renderWordList();
+  }
 
   /* ================= ČÍTANIE ================= */
   function showArticleList() {
@@ -332,12 +366,38 @@
     };
   };
 
+  gen.wordChoose = () => {
+    const word = pick(WORDS);
+    const englishPrompt = Math.random() < 0.5;
+    const correct = englishPrompt ? word.sk : word.en;
+    const pool = [...new Set(WORDS.filter(w => w !== word).map(w => englishPrompt ? w.sk : w.en))];
+    return {
+      word, type: 'choice',
+      prompt: englishPrompt ? `Čo znamená „${word.en}“?` : `Ako sa povie po anglicky „${word.sk}“?`,
+      options: shuffle([correct, ...shuffle(pool).slice(0, 3)]),
+      answers: [correct], reveal: correct
+    };
+  };
+
+  gen.wordWrite = () => {
+    const word = pick(WORDS);
+    const englishPrompt = Math.random() < 0.5;
+    return {
+      word, type: 'text',
+      prompt: englishPrompt ? `Napíš slovenský preklad: „${word.en}“` : `Napíš po anglicky: „${word.sk}“`,
+      answers: [englishPrompt ? word.sk : word.en],
+      reveal: englishPrompt ? word.sk : word.en
+    };
+  };
+
   const MODES = [
     ['fill', '✍️ Doplň tvar', 'Dopíš správny tvar slovesa do vety'],
     ['choose', '🔘 Vyber správny tvar', 'Minulý čas a 3. tvar – 4 možnosti'],
     ['translate', '🇸🇰→🇬🇧 Preklad', 'Z akého slovesa je to slovenské slovo?'],
     ['listen', '🎧 Počúvaj a napíš', 'Dopíš vetu, ktorú počuješ'],
-    ['speak', '🎤 Povedz nahlas', 'Precvič si výslovnosť s mikrofónom']
+    ['speak', '🎤 Povedz nahlas', 'Precvič si výslovnosť s mikrofónom'],
+    ['wordChoose', '📖 Slovíčka: vyber preklad', 'Vyber správny preklad základného slovíčka'],
+    ['wordWrite', '⌨️ Slovíčka: napíš preklad', 'Napíš anglický alebo slovenský preklad']
   ];
   let ex = null;
 
@@ -402,7 +462,13 @@
       if (ex.answered) return;
       ex.answered = true;
       if (ok) ex.score++;
-      recordStat(q.verb.inf, ok);
+      if (q.verb) recordStat(q.verb.inf, ok);
+      if (q.word) {
+        const stats = store.get('wordStats', {});
+        stats[q.word.en] = stats[q.word.en] || { ok: 0, bad: 0 };
+        stats[q.word.en][ok ? 'ok' : 'bad']++;
+        store.set('wordStats', stats);
+      }
       scoreSpan.textContent = `Skóre: ${ex.score}`;
       fb.classList.remove('hidden');
       fb.className = 'fb ' + (ok ? 'ok' : 'bad');
@@ -607,15 +673,19 @@
     area.innerHTML = '';
     const stats = store.get('stats', {});
     const entries = Object.entries(stats);
-    const ok = entries.reduce((s, [, v]) => s + v.ok, 0);
-    const bad = entries.reduce((s, [, v]) => s + v.bad, 0);
+    const wordStats = store.get('wordStats', {});
+    const wordEntries = Object.entries(wordStats);
+    const ok = entries.reduce((s, [, v]) => s + v.ok, 0) + wordEntries.reduce((s, [, v]) => s + v.ok, 0);
+    const bad = entries.reduce((s, [, v]) => s + v.bad, 0) + wordEntries.reduce((s, [, v]) => s + v.bad, 0);
     const mastered = entries.filter(([, v]) => v.ok >= 3 && v.ok >= v.bad * 2).length;
+    const masteredWords = wordEntries.filter(([, v]) => v.ok >= 3 && v.ok >= v.bad * 2).length;
 
     area.append(el('h2', {}, 'Môj pokrok'));
     area.append(el('div', {},
       el('div', { class: 'stat' }, el('b', {}, ok + bad), 'odpovedí'),
       el('div', { class: 'stat' }, el('b', {}, ok + bad ? Math.round((ok / (ok + bad)) * 100) + ' %' : '–'), 'správne'),
-      el('div', { class: 'stat' }, el('b', {}, `${mastered} / ${VERBS.length}`), 'zvládnuté slovesá')));
+      el('div', { class: 'stat' }, el('b', {}, `${mastered} / ${VERBS.length}`), 'zvládnuté slovesá'),
+      el('div', { class: 'stat' }, el('b', {}, `${masteredWords} / ${WORDS.length}`), 'zvládnuté slovíčka')));
 
     const hard = entries.filter(([, v]) => v.bad > 0).sort((a, b) => b[1].bad - a[1].bad).slice(0, 8);
     area.append(el('h3', {}, 'Čo ti ešte nejde'));
@@ -640,15 +710,28 @@
     });
     area.append(wl);
 
+    const difficultWords = wordEntries.filter(([, v]) => v.bad > 0).sort((a, b) => b[1].bad - a[1].bad).slice(0, 8);
+    area.append(el('h3', {}, 'Slovíčka na zopakovanie'));
+    const dwl = el('div', { class: 'list' });
+    if (!difficultWords.length) dwl.append(el('p', { class: 'hint' }, 'Zatiaľ tu nič nie je – precvič si slovíčka.'));
+    difficultWords.forEach(([en, v]) => {
+      const word = WORDS.find(x => x.en === en);
+      if (word) dwl.append(el('div', { class: 'li' },
+        el('span', {}, `${word.en} – ${word.sk}`),
+        el('span', { class: 'note' }, `chýb: ${v.bad}`)));
+    });
+    area.append(dwl);
+
     area.append(el('button', {
       class: 'sec', onclick: () => {
-        if (confirm('Naozaj vymazať celý pokrok a uložené slovíčka?')) { store.set('stats', {}); store.set('words', []); renderProgress(); }
+        if (confirm('Naozaj vymazať celý pokrok a uložené slovíčka?')) { store.set('stats', {}); store.set('wordStats', {}); store.set('words', []); renderProgress(); }
       }
     }, 'Vymazať pokrok'));
   }
 
   /* ---------- Štart ---------- */
   renderVerbs();
+  initDictionary();
   showArticleList();
   renderExMenu();
   initChat();
