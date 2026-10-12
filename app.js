@@ -208,15 +208,29 @@
       list.append(el('p', { class: 'hint' }, 'Nenašli sa žiadne slovíčka.'));
       return;
     }
-    const rows = el('div', { class: 'word-list' });
+    const groups = new Map();
     matches.forEach(w => {
-      rows.append(el('div', { class: 'word-row' },
-        el('span', {}, el('b', {}, w.en), el('small', {}, w.category)),
-        el('span', { class: 'word-translation' }, w.sk),
-        el('button', { class: 'icon', title: `Vypočuť: ${w.en}`, onclick: () => speak(w.en) }, '🔊')
-      ));
+      if (!groups.has(w.category)) groups.set(w.category, []);
+      groups.get(w.category).push(w);
     });
-    list.append(el('p', { class: 'note' }, `${matches.length} slovíčok`), rows);
+    list.append(el('p', { class: 'note' }, `${matches.length} slovíčok`));
+    groups.forEach((words, name) => {
+      const rows = el('div', { class: 'word-list' });
+      words.forEach(w => {
+        rows.append(el('div', { class: 'word-row' },
+          el('span', {}, el('b', {}, w.en)),
+          el('span', { class: 'word-translation' }, w.sk),
+          el('button', { class: 'icon', title: `Vypočuť: ${w.en}`, onclick: () => speak(w.en) }, '🔊')
+        ));
+      });
+      const practice = el('div', { class: 'word-practice' },
+        el('button', { class: 'sec', onclick: () => startEx('wordChoose', words, 'dictionary') }, '🔘 Vybrať preklad'),
+        el('button', { class: 'sec', onclick: () => startEx('wordWrite', words, 'dictionary') }, '⌨️ Napísať preklad'));
+      list.append(el('section', { class: 'word-category' },
+        el('h3', {}, name),
+        rows,
+        practice));
+    });
   }
 
   function initDictionary() {
@@ -396,6 +410,15 @@
     return { verb: v, type: 'text', prompt: 'Počúvaj a napíš vetu, ktorú počuješ:', speakText: v.ex, answers: [v.ex], reveal: v.ex, after: v.exSk };
   };
 
+  gen.sentenceTranslate = () => {
+    const v = pick(VERBS);
+    return {
+      verb: v, type: 'text',
+      prompt: `Prelož vetu do angličtiny: „${v.exSk}“`,
+      answers: [v.ex], reveal: v.ex
+    };
+  };
+
   gen.speak = () => {
     const v = pick(VERBS);
     const pasts = v.past.split('/');
@@ -408,10 +431,11 @@
   };
 
   gen.wordChoose = () => {
-    const word = pick(WORDS);
+    const wordPool = ex.wordPool || WORDS;
+    const word = pick(wordPool);
     const englishPrompt = Math.random() < 0.5;
     const correct = englishPrompt ? word.sk : word.en;
-    const pool = [...new Set(WORDS.filter(w => w !== word).map(w => englishPrompt ? w.sk : w.en))];
+    const pool = [...new Set(wordPool.filter(w => w !== word).map(w => englishPrompt ? w.sk : w.en).filter(x => x !== correct))];
     return {
       word, type: 'choice',
       prompt: englishPrompt ? `Čo znamená „${word.en}“?` : `Ako sa povie po anglicky „${word.sk}“?`,
@@ -422,7 +446,7 @@
   };
 
   gen.wordWrite = () => {
-    const word = pick(WORDS);
+    const word = pick(ex.wordPool || WORDS);
     const englishPrompt = Math.random() < 0.5;
     return {
       word, type: 'text',
@@ -438,6 +462,7 @@
     ['choose', '🔘 Vyber správny tvar', 'Minulý čas a 3. tvar – 4 možnosti'],
     ['translate', '🇸🇰→🇬🇧 Preklad', 'Z akého slovesa je to slovenské slovo?'],
     ['listen', '🎧 Počúvaj a napíš', 'Dopíš vetu, ktorú počuješ'],
+    ['sentenceTranslate', '🇸🇰→🇬🇧 Preklad viet', 'Prelož slovenské vety s nepravidelnými slovesami'],
     ['speak', '🎤 Povedz nahlas', 'Precvič si výslovnosť s mikrofónom'],
     ['wordChoose', '📖 Slovíčka: vyber preklad', 'Vyber správny preklad základného slovíčka'],
     ['wordWrite', '⌨️ Slovíčka: napíš preklad', 'Napíš anglický alebo slovenský preklad']
@@ -452,18 +477,21 @@
     });
   }
 
-  function startEx(mode) {
-    ex = { mode, n: 0, score: 0, total: 10 };
+  function startEx(mode, wordPool = null, returnTab = 'practice') {
+    ex = { mode, wordPool, returnTab, n: 0, score: 0, total: 10 };
     $('#exMenu').classList.add('hidden');
     $('#exArea').classList.add('on');
+    showTab('practice');
     nextQ();
     window.scrollTo(0, 0);
   }
 
   function closeEx() {
+    const returnTab = ex.returnTab;
     $('#exArea').classList.remove('on');
     $('#exArea').innerHTML = '';
     $('#exMenu').classList.remove('hidden');
+    showTab(returnTab);
     window.scrollTo(0, 0);
   }
 
@@ -483,15 +511,15 @@
     a.append(el('div', { class: 'big-score' }, `${ex.score} / ${ex.total}`));
     a.append(el('p', { class: 'hint' }, pct >= 80 ? 'Výborne!' : pct >= 50 ? 'Dobrá práca, skús to ešte raz.' : 'Nevadí, opakovanie je základ. Skús znova.'));
     a.append(el('div', { class: 'exrow' },
-      el('button', { class: 'primary', onclick: () => startEx(ex.mode) }, 'Znova'),
-      el('button', { class: 'sec', onclick: closeEx }, 'Späť na cvičenia')));
+      el('button', { class: 'primary', onclick: () => startEx(ex.mode, ex.wordPool, ex.returnTab) }, 'Znova'),
+      el('button', { class: 'sec', onclick: closeEx }, ex.returnTab === 'dictionary' ? 'Späť na slovník' : 'Späť na cvičenia')));
   }
 
   function renderQ() {
     const a = $('#exArea');
     const q = ex.q;
     a.innerHTML = '';
-    a.append(el('button', { class: 'link', onclick: closeEx }, '← Späť na cvičenia'));
+    a.append(el('button', { class: 'link', onclick: closeEx }, ex.returnTab === 'dictionary' ? '← Späť na slovník' : '← Späť na cvičenia'));
     const scoreSpan = el('span', {}, `Skóre: ${ex.score}`);
     a.append(el('div', { class: 'exhead' }, `Otázka ${ex.n} / ${ex.total}`, scoreSpan));
     a.append(el('h3', { class: 'prompt' }, q.prompt));

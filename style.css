@@ -40,6 +40,9 @@ input[type=search] { width: 100%; margin-bottom: 10px; }
 .word-row:last-child { border-bottom: 0; }
 .word-row small { display: block; color: var(--muted); font-size: .78rem; }
 .word-translation { color: var(--muted); }
+.word-category { margin-bottom: 18px; }
+.word-category h3 { margin: 0 0 8px; }
+.word-practice { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
 
 /* Slovesá */
 .vhead, .vrow { display: grid; grid-template-columns: 1.1fr 1.1fr 1.1fr 1.6fr 40px; gap: 8px; align-items: center; padding: 10px 12px; }
