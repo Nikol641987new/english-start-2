@@ -72,6 +72,7 @@
   const DICT = window.DICT;
   const WORDS = window.WORD_DATA;
   const ARTICLES = window.ARTICLES;
+  const SONGS = window.SONGS;
   const PRON = ['I', 'you', 'he/she/it', 'we', 'you', 'they'];
   const BE_PRES = ['am', 'are', 'is', 'are', 'are', 'are'];
   const FUTURE_OVERRIDES = {
@@ -358,6 +359,107 @@
     }, '💬 Porozprávať sa o článku s AI'));
     art.append(quiz);
     area.append(art);
+  }
+
+  /* ================= PESNIČKY ================= */
+  const songAudioFiles = new Map();
+
+  window.addEventListener('beforeunload', () => {
+    songAudioFiles.forEach(({ url }) => URL.revokeObjectURL(url));
+  });
+
+  function showSongList() {
+    const area = $('#songsArea');
+    area.innerHTML = '';
+    area.append(el('h2', {}, 'Anglické pesničky'));
+    area.append(el('p', { class: 'hint' }, 'Vyber pesničku a potom pre ňu vyber MP3 súbor zo svojho zariadenia. Nahrávka sa prehrá tu a súbor sa nikam neodosiela.'));
+    const cards = el('div', { class: 'cards' });
+    SONGS.forEach(song => {
+      cards.append(el('button', {
+        class: 'card',
+        onclick: () => showSong(song)
+      }, el('b', {}, song.title), el('span', {}, `${song.titleSk} · úroveň ${song.level}`)));
+    });
+    area.append(cards);
+  }
+
+  function showSong(song) {
+    const area = $('#songsArea');
+    area.innerHTML = '';
+    area.append(el('button', { class: 'link', onclick: showSongList }, '← Späť na pesničky'));
+    const panel = el('div', { class: 'article song' });
+    panel.append(el('h2', {}, `${song.title} (${song.titleSk})`));
+    panel.append(el('p', { class: 'hint' }, 'Klikni na anglické slovíčko a zobrazí sa jeho preklad.'));
+    const audio = el('audio', { class: 'song-audio', controls: '', preload: 'metadata' });
+    const fileInput = el('input', {
+      type: 'file',
+      accept: '.mp3,audio/mpeg',
+      'aria-label': `Vyber MP3 pre pesničku ${song.title}`
+    });
+    const fileLabel = el('label', { class: 'song-upload' }, '🎵 Vybrať MP3 zo zariadenia', fileInput);
+    const fileStatus = el('p', { class: 'note', 'aria-live': 'polite' },
+      songAudioFiles.has(song.id)
+        ? `Vybraná nahrávka: ${songAudioFiles.get(song.id).name}`
+        : 'Najprv vyber MP3 a potom stlač ▶.');
+    const currentFile = songAudioFiles.get(song.id);
+    if (currentFile) audio.src = currentFile.url;
+    fileInput.addEventListener('change', () => {
+      const file = fileInput.files[0];
+      if (!file) return;
+      if (file.type !== 'audio/mpeg' && !/\.mp3$/i.test(file.name)) {
+        fileStatus.textContent = 'Vyber, prosím, MP3 súbor.';
+        fileInput.value = '';
+        return;
+      }
+      const previous = songAudioFiles.get(song.id);
+      if (previous) URL.revokeObjectURL(previous.url);
+      const selected = { url: URL.createObjectURL(file), name: file.name };
+      songAudioFiles.set(song.id, selected);
+      audio.src = selected.url;
+      audio.load();
+      fileStatus.textContent = `Vybraná nahrávka: ${selected.name}`;
+    });
+    audio.addEventListener('error', () => {
+      fileStatus.textContent = 'Túto MP3 sa nepodarilo prehrať. Skús vybrať iný súbor.';
+    });
+    panel.append(el('div', { class: 'song-player' }, fileLabel, audio, fileStatus));
+
+    const lyrics = el('div', { class: 'song-lyrics' });
+    const tip = el('div', { class: 'tip' }, el('span', { class: 'note' }, '👆 Klikni na slovo a uvidíš preklad.'));
+    song.lines.forEach(line => {
+      const p = el('p', { class: 'para' });
+      tokenize(line.en).forEach(token => {
+        if (/^[\p{L}]/u.test(token)) {
+          const word = el('button', {
+            class: 'w song-word',
+            type: 'button',
+            title: `Preložiť: ${token}`
+          }, token);
+          word.addEventListener('click', () => {
+            $$('.w.active', panel).forEach(node => node.classList.remove('active'));
+            word.classList.add('active');
+            const result = lookup(token);
+            const translation = song.words[token.toLowerCase()] || (result && result.sk) || '(preklad nie je dostupný)';
+            tip.innerHTML = '';
+            tip.append(el('span', { class: 'big' }, token), ' → ', el('span', { class: 'big' }, translation));
+            if (result && result.note) tip.append(el('div', { class: 'note' }, result.note));
+            tip.append(el('div', {}, el('button', { onclick: () => speak(token) }, '🔊 Vypočuť slovo')));
+          });
+          p.append(word);
+        } else p.append(document.createTextNode(token));
+      });
+      lyrics.append(p, el('p', { class: 'trp' }, line.sk));
+    });
+    panel.append(lyrics);
+
+    const fullText = song.lines.map(line => line.en).join(' ');
+    const tools = el('div', { class: 'tools' },
+      el('button', { class: 'sec', onclick: () => panel.classList.toggle('show-tr') }, '🇸🇰 Zobraziť / skryť preklad'),
+      el('button', { class: 'sec', onclick: () => speak(fullText) }, '🔊 Prečítať text'),
+      el('button', { class: 'sec', onclick: () => speechSynthesis.cancel() }, '⏹ Stop'),
+    );
+    panel.append(tools, tip);
+    area.append(panel);
   }
 
   /* ================= CVIČENIA ================= */
@@ -824,6 +926,7 @@
   renderVerbs();
   initDictionary();
   showArticleList();
+  showSongList();
   renderExMenu();
   initChat();
   initSettings();
