@@ -11,7 +11,8 @@
   const rnd = n => Math.floor(Math.random() * n);
   const pick = a => a[rnd(a.length)];
   const shuffle = a => { a = [...a]; for (let i = a.length - 1; i > 0; i--) { const j = rnd(i + 1); [a[i], a[j]] = [a[j], a[i]]; } return a; };
-  const norm = s => String(s).toLowerCase().replace(/[’‘]/g, "'").replace(/[.,!?;:"]/g, '').replace(/\s+/g, ' ').trim();
+  const norm = s => String(s).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/[’‘]/g, "'").replace(/[.,!?;:"]/g, '').replace(/\s+/g, ' ').trim();
   const el = (tag, props = {}, ...kids) => {
     const e = document.createElement(tag);
     for (const [k, v] of Object.entries(props)) {
@@ -448,11 +449,15 @@
   gen.wordWrite = () => {
     const word = pick(ex.wordPool || WORDS);
     const englishPrompt = Math.random() < 0.5;
+    const translationAnswers = word.sk.split(/[,;]/).map(answer => answer.trim()).filter(Boolean);
+    const answers = englishPrompt
+      ? [word.sk, ...translationAnswers.flatMap(answer => [answer, ...(norm(answer) === norm('prepáčte') ? ['prepáč'] : [])])]
+      : [word.en];
     return {
       word, type: 'text',
       prompt: englishPrompt ? `Napíš slovenský preklad: „${word.en}“` : `Napíš po anglicky: „${word.sk}“`,
       wordSpeakText: englishPrompt ? word.en : null,
-      answers: [englishPrompt ? word.sk : word.en],
+      answers,
       reveal: englishPrompt ? word.sk : word.en
     };
   };
@@ -578,7 +583,16 @@
         e.preventDefault();
         if (ex.answered) return;
         const v = norm(input.value);
-        resolve(q.answers.some(x => norm(x) === v));
+        const matched = q.answers.find(x => norm(x) === v);
+        let shown;
+        if (matched && q.word && v !== norm(q.reveal)) {
+          const parts = q.reveal.split(/[,;]/).map(part => part.trim()).filter(Boolean);
+          const otherTranslations = parts.filter(part => norm(part) !== v);
+          shown = otherTranslations.length
+            ? `Ďalší správny preklad: ${otherTranslations.join(', ')}.`
+            : `Celý preklad: ${q.reveal}.`;
+        }
+        resolve(Boolean(matched), shown);
       });
       a.append(form);
       input.focus();
