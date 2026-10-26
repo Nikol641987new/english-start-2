@@ -418,12 +418,13 @@
     }));
     let index = 0;
     let score = 0;
+    let advanceTimer;
 
     function renderQuestion() {
       const area = $('#kidsArea');
       const { word, options } = questions[index];
       area.innerHTML = '';
-      area.append(el('button', { class: 'link', type: 'button', onclick: () => showKidsLesson(lesson) }, '← Späť k slovíčkam'));
+      area.append(el('button', { class: 'link', type: 'button', onclick: () => { clearTimeout(advanceTimer); showKidsLesson(lesson); } }, '← Späť k slovíčkam'));
       area.append(el('p', { class: 'kid-progress' }, `Otázka ${index + 1} z ${questions.length}`));
       area.append(el('h2', { class: 'kid-question' }, `Čo znamená „${word.en}“?`));
       area.append(el('button', {
@@ -438,6 +439,8 @@
         class: 'primary',
         type: 'button',
         onclick: () => {
+          clearTimeout(advanceTimer);
+          advanceTimer = null;
           index++;
           if (index < questions.length) renderQuestion();
           else renderKidsResult();
@@ -462,7 +465,8 @@
             feedback.textContent = `Skoro! „${word.en}“ znamená „${word.sk}“.`;
           }
           next.hidden = false;
-          next.focus();
+          if (correct) advanceTimer = setTimeout(() => next.click(), 800);
+          else next.focus();
         });
         choices.append(button);
       });
@@ -608,6 +612,7 @@
   }
 
   function startEx(mode, wordPool = null, returnTab = 'practice') {
+    if (ex && ex.nextTimer) clearTimeout(ex.nextTimer);
     ex = { mode, wordPool, returnTab, n: 0, score: 0, total: 10 };
     $('#exMenu').classList.add('hidden');
     $('#exArea').classList.add('on');
@@ -617,6 +622,7 @@
   }
 
   function closeEx() {
+    if (ex.nextTimer) clearTimeout(ex.nextTimer);
     const returnTab = ex.returnTab;
     $('#exArea').classList.remove('on');
     $('#exArea').innerHTML = '';
@@ -682,8 +688,15 @@
       if (q.word) {
         fb.append(el('button', { class: 'sec', type: 'button', title: `Vypočuť: ${q.word.en}`, onclick: () => speak(q.word.en) }, '🔊 Vypočuť slovíčko'));
       }
-      nextBtn.classList.remove('hidden');
-      nextBtn.focus();
+      if (ok) {
+        ex.nextTimer = setTimeout(() => {
+          ex.nextTimer = null;
+          if ($('#exArea').classList.contains('on') && ex.answered) nextQ();
+        }, 800);
+      } else {
+        nextBtn.classList.remove('hidden');
+        nextBtn.focus();
+      }
     };
 
     if (q.type === 'choice') {
