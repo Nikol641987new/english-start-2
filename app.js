@@ -72,6 +72,7 @@
   const DICT = window.DICT;
   const WORDS = window.WORD_DATA;
   const ARTICLES = window.ARTICLES;
+  const KIDS_LESSONS = window.KIDS_LESSONS;
   const PRON = ['I', 'you', 'he/she/it', 'we', 'you', 'they'];
   const BE_PRES = ['am', 'are', 'is', 'are', 'are', 'are'];
   const FUTURE_OVERRIDES = {
@@ -140,11 +141,14 @@
   /* ---------- Záložky ---------- */
   function showTab(name) {
     $$('#tabs button').forEach(b => b.classList.toggle('active', b.dataset.tab === name));
+    $('#btnKids').classList.toggle('active', name === 'kids');
+    $('#btnKids').setAttribute('aria-pressed', String(name === 'kids'));
     $$('.tab').forEach(t => t.classList.toggle('active', t.id === 'tab-' + name));
     if (name === 'progress') renderProgress();
     window.scrollTo(0, 0);
   }
   $$('#tabs button').forEach(b => b.addEventListener('click', () => showTab(b.dataset.tab)));
+  $('#btnKids').addEventListener('click', () => showTab('kids'));
 
   /* ---------- Štatistiky ---------- */
   function recordStat(inf, ok) {
@@ -358,6 +362,127 @@
     }, '💬 Porozprávať sa o článku s AI'));
     art.append(quiz);
     area.append(art);
+  }
+
+  /* ================= ANGLIČTINA PRE DRUHÁKOV ================= */
+  function showKidsLessons() {
+    const area = $('#kidsArea');
+    area.innerHTML = '';
+    area.append(el('h2', {}, 'Angličtina pre druhákov'));
+    area.append(el('p', { class: 'hint' }, 'Vyber si tému, vypočuj si slovíčka a na konci si ich môžeš precvičiť v krátkom kvíze. Obsah je vytvorený pre túto aplikáciu.'));
+    const cards = el('div', { class: 'cards kid-lessons' });
+    KIDS_LESSONS.forEach(lesson => {
+      cards.append(el('button', {
+        class: 'card kid-lesson',
+        type: 'button',
+        onclick: () => showKidsLesson(lesson)
+      },
+      el('span', { class: 'kid-lesson-icon', 'aria-hidden': 'true' }, lesson.icon),
+      el('b', {}, lesson.title),
+      el('span', {}, lesson.description)));
+    });
+    area.append(cards);
+  }
+
+  function showKidsLesson(lesson) {
+    const area = $('#kidsArea');
+    area.innerHTML = '';
+    area.append(el('button', { class: 'link', type: 'button', onclick: showKidsLessons }, '← Späť na témy'));
+    area.append(el('h2', {}, `${lesson.icon} ${lesson.title}`));
+    area.append(el('p', { class: 'hint' }, lesson.description));
+    const words = el('div', { class: 'kid-words' });
+    lesson.words.forEach(word => {
+      words.append(el('div', { class: 'kid-word' },
+        el('span', { class: 'kid-word-icon', 'aria-hidden': 'true' }, word.icon),
+        el('span', {}, el('b', {}, word.en), el('small', {}, word.sk)),
+        el('button', {
+          class: 'icon kid-speak',
+          type: 'button',
+          title: `Vypočuť: ${word.en}`,
+          'aria-label': `Vypočuť slovíčko ${word.en}`,
+          onclick: () => speak(word.en)
+        }, '🔊')));
+    });
+    area.append(words);
+    area.append(el('button', {
+      class: 'primary kid-start',
+      type: 'button',
+      onclick: () => startKidsQuiz(lesson)
+    }, '⭐ Precvičiť slovíčka'));
+  }
+
+  function startKidsQuiz(lesson) {
+    const questions = shuffle(lesson.words).map(word => ({
+      word,
+      options: shuffle([word, ...shuffle(lesson.words.filter(item => item !== word)).slice(0, 3)])
+    }));
+    let index = 0;
+    let score = 0;
+
+    function renderQuestion() {
+      const area = $('#kidsArea');
+      const { word, options } = questions[index];
+      area.innerHTML = '';
+      area.append(el('button', { class: 'link', type: 'button', onclick: () => showKidsLesson(lesson) }, '← Späť k slovíčkam'));
+      area.append(el('p', { class: 'kid-progress' }, `Otázka ${index + 1} z ${questions.length}`));
+      area.append(el('h2', { class: 'kid-question' }, `Čo znamená „${word.en}“?`));
+      area.append(el('button', {
+        class: 'sec kid-question-audio',
+        type: 'button',
+        onclick: () => speak(word.en)
+      }, '🔊 Vypočuť slovíčko'));
+
+      const choices = el('div', { class: 'kid-choices' });
+      const feedback = el('p', { class: 'kid-feedback', 'aria-live': 'polite' });
+      const next = el('button', {
+        class: 'primary',
+        type: 'button',
+        onclick: () => {
+          index++;
+          if (index < questions.length) renderQuestion();
+          else renderKidsResult();
+        }
+      }, index === questions.length - 1 ? 'Zobraziť výsledok' : 'Ďalej →');
+      next.hidden = true;
+
+      options.forEach(option => {
+        const button = el('button', { class: 'kid-choice', type: 'button' }, `${option.icon} ${option.sk}`);
+        button.addEventListener('click', () => {
+          if (button.disabled) return;
+          choices.querySelectorAll('button').forEach(choice => { choice.disabled = true; });
+          const correct = option === word;
+          button.classList.add(correct ? 'right' : 'wrong');
+          if (!correct) choices.querySelectorAll('button').forEach((choice, i) => {
+            if (options[i] === word) choice.classList.add('right');
+          });
+          if (correct) {
+            score++;
+            feedback.textContent = 'Výborne! 🎉';
+          } else {
+            feedback.textContent = `Skoro! „${word.en}“ znamená „${word.sk}“.`;
+          }
+          next.hidden = false;
+          next.focus();
+        });
+        choices.append(button);
+      });
+      area.append(choices, feedback, next);
+    }
+
+    function renderKidsResult() {
+      const area = $('#kidsArea');
+      area.innerHTML = '';
+      area.append(el('div', { class: 'kid-result' },
+        el('div', { class: 'kid-result-icon', 'aria-hidden': 'true' }, score === questions.length ? '🏆' : '🌟'),
+        el('h2', {}, 'Hotovo!'),
+        el('p', {}, `Máš ${score} z ${questions.length} správne.`),
+        el('p', { class: 'hint' }, score === questions.length ? 'Paráda, všetko si uhádol!' : 'Každý pokus pomáha. Skús to ešte raz!'),
+        el('div', { class: 'kid-result-actions' },
+          el('button', { class: 'primary', type: 'button', onclick: () => startKidsQuiz(lesson) }, 'Skúsiť znova'),
+          el('button', { class: 'sec', type: 'button', onclick: () => showKidsLessons() }, 'Vybrať inú tému'))));
+    }
+
+    renderQuestion();
   }
 
   /* ================= CVIČENIA ================= */
@@ -824,6 +949,7 @@
   renderVerbs();
   initDictionary();
   showArticleList();
+  showKidsLessons();
   renderExMenu();
   initChat();
   initSettings();

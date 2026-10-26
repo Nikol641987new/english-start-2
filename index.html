@@ -19,6 +19,14 @@
   <button id="btnSettings" class="icon" title="Nastavenia AI">⚙️</button>
 </header>
 
+<aside class="kids-entry">
+  <div class="kids-entry-copy">
+    <span class="kids-entry-icon" aria-hidden="true">🧸</span>
+    <span><b>Angličtina pre druhákov</b><small>Krátke lekcie, obrázkové slovíčka a kvízy</small></span>
+  </div>
+  <button id="btnKids" type="button">Začať učenie <span aria-hidden="true">→</span></button>
+</aside>
+
 <nav id="tabs">
   <button data-tab="verbs" class="active">📚 Slovesá</button>
   <button data-tab="dictionary">📖 Slovník</button>
@@ -51,6 +59,10 @@
 
   <section id="tab-read" class="tab">
     <div id="readArea"></div>
+  </section>
+
+  <section id="tab-kids" class="tab">
+    <div id="kidsArea"></div>
   </section>
 
   <section id="tab-practice" class="tab">
@@ -127,6 +139,7 @@
 <script src="dictionary-extra.js"></script>
 <script src="verbs.js"></script>
 <script src="articles.js"></script>
+<script src="kids-lessons.js"></script>
 <script src="app.js"></script>
 </body>
 </html>
