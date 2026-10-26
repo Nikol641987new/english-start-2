@@ -3,18 +3,29 @@ window.KIDS_LESSONS = [
     id: 'colours-numbers',
     title: 'Farby a čísla',
     icon: '🎨',
-    description: 'Základné farby a počítanie do päť.',
+    description: 'Základné farby a počítanie do desať.',
     words: [
       { en: 'red', sk: 'červená', icon: '🔴' },
       { en: 'blue', sk: 'modrá', icon: '🔵' },
       { en: 'yellow', sk: 'žltá', icon: '🟡' },
       { en: 'green', sk: 'zelená', icon: '🟢' },
       { en: 'pink', sk: 'ružová', icon: '🩷' },
+      { en: 'orange', sk: 'oranžová', icon: '🟠' },
+      { en: 'purple', sk: 'fialová', icon: '🟣' },
+      { en: 'black', sk: 'čierna', icon: '⚫' },
+      { en: 'white', sk: 'biela', icon: '⚪' },
+      { en: 'brown', sk: 'hnedá', icon: '🟤' },
+      { en: 'grey', sk: 'sivá', icon: '🩶' },
       { en: 'one', sk: 'jeden', icon: '1️⃣' },
       { en: 'two', sk: 'dva', icon: '2️⃣' },
       { en: 'three', sk: 'tri', icon: '3️⃣' },
       { en: 'four', sk: 'štyri', icon: '4️⃣' },
-      { en: 'five', sk: 'päť', icon: '5️⃣' }
+      { en: 'five', sk: 'päť', icon: '5️⃣' },
+      { en: 'six', sk: 'šesť', icon: '6️⃣' },
+      { en: 'seven', sk: 'sedem', icon: '7️⃣' },
+      { en: 'eight', sk: 'osem', icon: '8️⃣' },
+      { en: 'nine', sk: 'deväť', icon: '9️⃣' },
+      { en: 'ten', sk: 'desať', icon: '🔟' }
     ]
   },
   {
@@ -62,7 +73,21 @@ window.KIDS_LESSONS = [
       { en: 'rabbit', sk: 'králik', icon: '🐰' },
       { en: 'horse', sk: 'kôň', icon: '🐴' },
       { en: 'duck', sk: 'kačka', icon: '🦆' },
-      { en: 'mouse', sk: 'myš', icon: '🐭' }
+      { en: 'mouse', sk: 'myš', icon: '🐭' },
+      { en: 'cow', sk: 'krava', icon: '🐮' },
+      { en: 'pig', sk: 'prasa', icon: '🐷' },
+      { en: 'sheep', sk: 'ovca', icon: '🐑' },
+      { en: 'chicken', sk: 'sliepka', icon: '🐔' },
+      { en: 'lion', sk: 'lev', icon: '🦁' },
+      { en: 'tiger', sk: 'tiger', icon: '🐯' },
+      { en: 'elephant', sk: 'slon', icon: '🐘' },
+      { en: 'monkey', sk: 'opica', icon: '🐵' },
+      { en: 'giraffe', sk: 'žirafa', icon: '🦒' },
+      { en: 'bear', sk: 'medveď', icon: '🐻' },
+      { en: 'frog', sk: 'žaba', icon: '🐸' },
+      { en: 'snake', sk: 'had', icon: '🐍' },
+      { en: 'fox', sk: 'líška', icon: '🦊' },
+      { en: 'goat', sk: 'koza', icon: '🐐' }
     ]
   },
   {
